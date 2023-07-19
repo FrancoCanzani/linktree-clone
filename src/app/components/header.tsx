@@ -22,7 +22,6 @@ export default function Header() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsUser(true);
-        push('/myRepos');
       } else {
         setIsUser(false);
       }
