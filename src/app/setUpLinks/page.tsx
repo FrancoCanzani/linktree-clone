@@ -1,15 +1,14 @@
 'use client';
 
 import { collection, addDoc } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
-import { db, app } from '@/firebase';
+import { db } from '@/firebase';
 import { FormEvent, useState } from 'react';
 
-const auth = getAuth(app);
-const user = auth.currentUser;
+import useFirebaseUser from '@/hooks/useFirebaseUser';
 
 export default function MyRepos() {
-  const [link, setLink] = useState<string | undefined>(undefined);
+  const [link, setLink] = useState<string>('');
+  const { user } = useFirebaseUser();
 
   async function handleAddLink(e: FormEvent) {
     e.preventDefault();
@@ -31,7 +30,7 @@ export default function MyRepos() {
       <h2 className='mb-16'>Lets add your links:</h2>
       <form onSubmit={handleAddLink}>
         <input
-          type='url'
+          type='text'
           name='link'
           id='link'
           required

@@ -3,25 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import UserProfile from '../components/userProfile';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
-import { db, app } from '@/firebase';
+import { db } from '@/firebase';
 import { DocumentData } from 'firebase/firestore';
 
-const auth = getAuth(app);
-const user = auth.currentUser;
+import useFirebaseUser from '@/hooks/useFirebaseUser';
+
+import LinkSkeleton from '../components/skeletons/linkSkeleton';
 
 export default function RepoTree() {
   const [repos, setRepos] = useState<DocumentData[]>([]);
   const [dataFetched, setDataFetched] = useState(false); // State to track data fetching status
-  const [user, setUser] = useState<User | null>(null); // Import the User type from Firebase
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  const { user } = useFirebaseUser();
 
   useEffect(() => {
     if (user) {
@@ -43,6 +35,10 @@ export default function RepoTree() {
 
   function repoToUrl(link: string): string | undefined {
     try {
+      if (!/^https?:\/\//i.test(link)) {
+        // If the link does not start with http:// or https://, prepend http://
+        link = 'http://' + link;
+      }
       const url = new URL(link);
       return url.hostname;
     } catch (error) {
@@ -52,26 +48,32 @@ export default function RepoTree() {
   }
 
   return (
-    <main className='flex min-h-screen flex-col items-center justify-evenly xl:px-44 py-8'>
+    <main className='flex bg-gradient-to-tr from-purple-800 via-purple-900 to-purple-900 min-h-screen flex-col items-center justify-start xl:px-44 py-8'>
       <UserProfile />
       <div className='flex flex-col items-center justify-center'>
-        {dataFetched ? ( // Conditionally render the repositories and favicons after data is fetched
+        {dataFetched ? (
           repos.length > 0 ? (
-            repos.map((repo) => (
-              <a
-                key={repo.repoLink}
-                target='_blank'
-                href={repo.repoLink}
-                className='m-2 text-clip min-w-full hover:scale-105 transition-all duration-100 px-6 py-3 rounded-xl bg-lime-400 border-4 font-semibold text-slate-900 border-lime-300'
-              >
-                <span> {repoToUrl(repo.repoLink)}</span>
-              </a>
-            ))
+            repos.map((repo) => {
+              const link = /^https?:\/\//i.test(repo.repoLink)
+                ? repo.repoLink
+                : 'http://' + repo.repoLink;
+
+              return (
+                <a
+                  key={repo.repoLink}
+                  target='_blank'
+                  href={link}
+                  className='m-2 text-clip min-w-full hover:scale-105 transition-all duration-100 px-6 py-3 rounded-xl bg-lime-400 border-4 font-semibold text-slate-900 border-lime-200 shadow-inner shadow-lime-400'
+                >
+                  <span>{repoToUrl(repo.repoLink) || repo.repoLink}</span>
+                </a>
+              );
+            })
           ) : (
             <p>No repositories found.</p>
           )
         ) : (
-          <span className='animate-spin'>🌍</span> // Display a loading message while data is being fetched
+          <LinkSkeleton />
         )}
       </div>
     </main>

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { app } from '@/firebase';
 import { useState, useEffect } from 'react';
+import UserSkeleton from './skeletons/userSkeleton';
 
 const auth = getAuth(app);
 const user = auth.currentUser;
@@ -11,6 +12,7 @@ const user = auth.currentUser;
 export default function UserProfile() {
   const [userName, setUserName] = useState<string | null>(null);
   const [userPic, setUserPic] = useState<string | null>(null);
+  const [userFetched, setUserFetched] = useState(false); // State to track data fetching status
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -23,8 +25,9 @@ export default function UserProfile() {
         if (name) {
           setUserName(name);
         }
+        setUserFetched(true);
       } else {
-        setUserPic(null); // Reset the userPic and userName when user is not logged in
+        setUserPic(null); // Reset the userPic and userName when the user is not logged in
         setUserName(null);
       }
     });
@@ -33,20 +36,28 @@ export default function UserProfile() {
   }, []);
 
   return (
-    <div className='flex flex-col items-center justify-center'>
-      {userPic ? (
-        <Image
-          src={userPic}
-          alt={`${user?.displayName} profile pic`}
-          width={60}
-          height={60}
-          className='rounded-md'
-          priority
-        />
+    <div className='flex flex-col mb-5 items-center justify-center'>
+      {userFetched ? (
+        <>
+          {userPic ? (
+            <Image
+              src={userPic}
+              alt={`${user?.displayName} profile pic`}
+              width={60}
+              height={60}
+              className='rounded-md shadow-sm shadow-slate-400 transition-opacity duration-400 opacity-100'
+              priority
+            />
+          ) : (
+            <p>No profile picture</p>
+          )}
+          <h2 className='mt-4 text-pink-100 text-2xl capitalize transition-opacity duration-400 font-bold opacity-100'>
+            {userName}
+          </h2>
+        </>
       ) : (
-        <p>No profile picture</p>
+        <UserSkeleton />
       )}
-      <h2 className='mt-4 capitalize font-semibold text-xl'>{userName}</h2>
     </div>
   );
 }

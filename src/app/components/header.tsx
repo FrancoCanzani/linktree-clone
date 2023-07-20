@@ -29,7 +29,7 @@ export default function Header() {
   }, [push]);
 
   return (
-    <header className='flex w-full items-center justify-between'>
+    <header className='flex w-full px-6 items-center justify-between'>
       <Icon />
       {isUser ? <LogOut /> : <LogIn />}
     </header>
