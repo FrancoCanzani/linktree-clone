@@ -43,9 +43,9 @@ export default function UserProfile() {
             <Image
               src={userPic}
               alt={`${user?.displayName} profile pic`}
-              width={60}
-              height={60}
-              className='rounded-md shadow-sm shadow-slate-400 transition-opacity duration-400 opacity-100'
+              width={70}
+              height={70}
+              className='rounded-full shadow-sm shadow-slate-400 transition-opacity duration-400 opacity-100'
               priority
             />
           ) : (

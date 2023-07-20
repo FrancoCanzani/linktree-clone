@@ -17,7 +17,7 @@ export default function NavigationFooter() {
           : 'opacity-100 pointer-events-auto'
       }`}
     >
-      <div className='bg-slate-900 shadow-sm shadow-slate-600 font-semibold capitalize px-7 py-2 text-white rounded-3xl flex'>
+      <div className='bg-gradient-to-tl from-black via-black to-purple-900 shadow-sm shadow-slate-600 font-semibold capitalize px-7 py-2 text-white rounded-3xl flex'>
         <Link
           href={'/'}
           onClick={() => setActiveTab('home')}

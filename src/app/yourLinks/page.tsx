@@ -6,6 +6,8 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '@/firebase';
 import { DocumentData } from 'firebase/firestore';
 
+import Image from 'next/image';
+
 import useFirebaseUser from '@/hooks/useFirebaseUser';
 
 import LinkSkeleton from '../components/skeletons/linkSkeleton';
@@ -14,6 +16,7 @@ export default function RepoTree() {
   const [repos, setRepos] = useState<DocumentData[]>([]);
   const [dataFetched, setDataFetched] = useState(false); // State to track data fetching status
   const { user } = useFirebaseUser();
+  const [favicons, setFavicons] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (user) {
@@ -33,6 +36,38 @@ export default function RepoTree() {
     }
   }, [user]);
 
+  useEffect(() => {
+    const fetchFavicons = async () => {
+      const faviconsData: Record<string, string> = {};
+      for (const repo of repos) {
+        const link = /^https?:\/\//i.test(repo.repoLink)
+          ? repo.repoLink
+          : 'http://' + repo.repoLink;
+        try {
+          const response = await fetch(
+            `https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+              link
+            )}`
+          );
+          if (response.ok) {
+            faviconsData[repo.repoLink] = response.url;
+          } else {
+            console.error(
+              `Error fetching favicon for "${link}". Status: ${response.status}`
+            );
+          }
+        } catch (error) {
+          console.error(`Error fetching favicon for "${link}":`, error);
+        }
+      }
+      setFavicons(faviconsData);
+    };
+
+    if (dataFetched && repos.length > 0) {
+      fetchFavicons();
+    }
+  }, [dataFetched, repos]);
+
   function repoToUrl(link: string): string | undefined {
     try {
       if (!/^https?:\/\//i.test(link)) {
@@ -48,7 +83,7 @@ export default function RepoTree() {
   }
 
   return (
-    <main className='flex bg-gradient-to-tr from-purple-800 via-purple-900 to-purple-900 min-h-screen flex-col items-center justify-start xl:px-44 py-8'>
+    <main className='flex bg-gradient-to-tl from-black via-black to-purple-900 min-h-screen flex-col items-center justify-start xl:px-44 py-8'>
       <UserProfile />
       <div className='flex flex-col items-center justify-center'>
         {dataFetched ? (
@@ -59,14 +94,30 @@ export default function RepoTree() {
                 : 'http://' + repo.repoLink;
 
               return (
-                <a
+                <div
                   key={repo.repoLink}
-                  target='_blank'
-                  href={link}
-                  className='m-2 text-clip min-w-full hover:scale-105 transition-all duration-100 px-6 py-3 rounded-xl bg-lime-400 border-4 font-semibold text-slate-900 border-lime-200 shadow-inner shadow-lime-400'
+                  className='m-2 flex items-center gap-4 min-w-full hover:scale-105 transition-all duration-100 px-9 py-4 rounded-3xl bg-purple-900 font-semibold text-pink-100'
                 >
-                  <span>{repoToUrl(repo.repoLink) || repo.repoLink}</span>
-                </a>
+                  <Image
+                    src={
+                      favicons[repo.repoLink] ||
+                      `https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+                        link
+                      )}`
+                    }
+                    height={50}
+                    width={50}
+                    alt={`Favicon for ${link}`}
+                    className='p-2 bg-white rounded-md'
+                  />
+                  <a
+                    target='_blank'
+                    href={link}
+                    className='text-clip min-w-full'
+                  >
+                    <span>{repoToUrl(repo.repoLink) || repo.repoLink}</span>
+                  </a>
+                </div>
               );
             })
           ) : (
