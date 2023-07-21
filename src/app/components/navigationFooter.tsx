@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import useScrollEffect from '@/hooks/useScrollEffect';
+import useScrollEffect from '@/utils/hooks/useScrollEffect';
 
 import Link from 'next/link';
 

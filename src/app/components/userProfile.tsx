@@ -51,8 +51,8 @@ export default function UserProfile() {
           ) : (
             <p>No profile picture</p>
           )}
-          <h2 className='mt-4 text-pink-100 text-2xl capitalize transition-opacity duration-400 font-bold opacity-100'>
-            {userName}
+          <h2 className='mt-4 text-pink-100 text-xl capitalize transition-opacity duration-400 font-black opacity-100'>
+            {`@${userName?.replace(' ', '')}`}
           </h2>
         </>
       ) : (
