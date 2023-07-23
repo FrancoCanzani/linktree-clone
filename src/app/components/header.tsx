@@ -5,13 +5,14 @@ import Icon from './icon';
 import SignIn from './buttons/signIn';
 import SignOut from './buttons/signOut';
 
+// React / Custom hooks
 import { useState, useEffect } from 'react';
 import useScrollEffect from '@/utils/hooks/useScrollEffect';
 
+// NextJs Imports
 import Link from 'next/link';
 
-import { useRouter } from 'next/navigation';
-
+// Firebase imports
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { app } from '../../../firebase';
 
@@ -20,7 +21,6 @@ const auth = getAuth(app);
 export default function Header() {
   const [isUser, setIsUser] = useState(false);
   const { isHidden } = useScrollEffect();
-  const { push } = useRouter();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -30,7 +30,7 @@ export default function Header() {
         setIsUser(false);
       }
     });
-  }, [push]);
+  }, []);
 
   return (
     <header
@@ -41,24 +41,33 @@ export default function Header() {
       }`}
     >
       <Icon />
-      <nav>
-        <Link href={'/'} className='px-6 py-3 hover:bg-gray-300 rounded-xl'>
-          Home
-        </Link>
-        <Link
-          href={'/setUpLinks'}
-          className='px-6 py-3 mx-4 hover:bg-gray-300 rounded-xl'
-        >
-          Set up
-        </Link>
-        <Link
-          href={'/yourLinks'}
-          className='px-6 py-3 hover:bg-gray-300 rounded-xl mr-4'
-        >
-          Your Links
-        </Link>
-        {isUser ? <SignOut /> : <SignIn />}
-      </nav>
+      {isUser ? (
+        <>
+          <nav>
+            <Link
+              href={'/setUp'}
+              className='px-6 py-3 mx-4 hover:bg-gray-300 rounded-xl'
+            >
+              Set up Links
+            </Link>
+            <Link
+              href={'/yourLinks'}
+              className='px-6 py-3 hover:bg-gray-300 rounded-xl mr-4'
+            >
+              Your Links
+            </Link>
+            <Link
+              href={'/setUp'}
+              className='px-6 py-3 mx-4 hover:bg-gray-300 rounded-xl'
+            >
+              Appearance
+            </Link>
+            <SignOut />
+          </nav>
+        </>
+      ) : (
+        <SignIn />
+      )}
     </header>
   );
 }
