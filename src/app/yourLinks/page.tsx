@@ -9,7 +9,7 @@ import UserLink from '../components/userLink';
 
 // Firebase imports
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '@/firebase';
+import { db } from '../../../firebase';
 import { DocumentData } from 'firebase/firestore';
 
 // utils
@@ -38,10 +38,8 @@ export default function LinkTree() {
     }
   }, [user]);
 
-  console.log(links);
-
   return (
-    <main className='flex bg-gradient-to-tl from-black via-black to-purple-900 min-h-screen flex-col items-center justify-start xl:px-44 py-8'>
+    <main className='flex bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black min-h-screen flex-col items-center justify-start xl:px-44 py-8'>
       <UserProfile />
       <UserLink dataFetched={dataFetched} links={links} />
     </main>

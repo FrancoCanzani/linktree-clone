@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { app } from '@/firebase';
+import { app } from '../../../firebase';
 import { useState, useEffect } from 'react';
 import UserSkeleton from './skeletons/userSkeleton';
 

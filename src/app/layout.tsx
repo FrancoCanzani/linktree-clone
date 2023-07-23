@@ -4,7 +4,7 @@ import { Source_Code_Pro } from 'next/font/google';
 
 const sourceCodePro = Source_Code_Pro({ subsets: ['latin'] });
 
-import NavigationFooter from './components/navigationFooter';
+import Header from './components/header';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -19,8 +19,8 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={sourceCodePro.className}>
+        <Header />
         {children}
-        <NavigationFooter />
       </body>
     </html>
   );

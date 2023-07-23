@@ -2,7 +2,7 @@
 
 // Firebase import
 import { getAuth, signOut } from 'firebase/auth';
-import { app } from '../../../firebase';
+import { app } from '../../../../firebase';
 const auth = getAuth(app);
 
 const handleSignOut = () => {
@@ -10,11 +10,11 @@ const handleSignOut = () => {
   //   Add error handling
 };
 
-export default function LogOut() {
+export default function SignOut() {
   return (
     <button
       onClick={handleSignOut}
-      className='rounded-xl bg-red-500 hover:bg-red-600 px-6 text-xl font-semibold py-3'
+      className='rounded-xl bg-red-500 hover:bg-red-400 px-6 py-3'
     >
       SignOut
     </button>
