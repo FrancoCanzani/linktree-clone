@@ -3,18 +3,23 @@
 // Firebase import
 import { getAuth, signOut } from 'firebase/auth';
 import { app } from '../../../../firebase';
+
+import { useRouter } from 'next/navigation';
+
 const auth = getAuth(app);
 
-const handleSignOut = () => {
-  signOut(auth);
-  //   Add error handling
-};
-
 export default function SignOut() {
+  const { push } = useRouter();
+
+  const handleSignOut = () => {
+    signOut(auth);
+    push('/');
+  };
+
   return (
     <button
       onClick={handleSignOut}
-      className='rounded-xl bg-red-500 hover:bg-red-400 px-6 py-3'
+      className='px-3 py-2 font-bold bg-black text-white hover:opacity-90 rounded-md'
     >
       SignOut
     </button>

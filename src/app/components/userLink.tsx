@@ -6,6 +6,7 @@ import LinkSkeleton from './skeletons/linkSkeleton';
 
 // Firebase types
 import { DocumentData } from 'firebase/firestore';
+import Link from 'next/link';
 
 interface UserLinkProps {
   dataFetched: boolean;
@@ -17,7 +18,7 @@ export default function UserLink({ dataFetched, links }: UserLinkProps) {
     <>
       {dataFetched ? (
         links.length > 0 ? (
-          <div className='flex flex-col relative items-center justify-center'>
+          <div className='flex w-1/2 flex-col relative items-center justify-center'>
             {links.map((link) => {
               const url = /^https?:\/\//i.test(link.userLinks.linkURL)
                 ? link.userLinks.linkURL
@@ -28,7 +29,7 @@ export default function UserLink({ dataFetched, links }: UserLinkProps) {
                   target='_blank'
                   href={url}
                   key={link.userLinks.linkURL}
-                  className='m-2 flex items-center justify-center gap-4 w-96 px-9 py-4 rounded-md bg-[conic-gradient(at_right,_var(--tw-gradient-stops))] from-indigo-200 via-slate-600 to-indigo-200 font-semibold'
+                  className='m-2 flex w-full items-center justify-center gap-4 px-9 py-4 rounded-md bg-[conic-gradient(at_right,_var(--tw-gradient-stops))] from-indigo-200 via-slate-600 to-indigo-200 font-semibold'
                 >
                   <Image
                     src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(
@@ -48,7 +49,15 @@ export default function UserLink({ dataFetched, links }: UserLinkProps) {
             })}
           </div>
         ) : (
-          <p>No Links Found</p>
+          <div className='bg-gray-100 flex flex-col items-center justify-center px-4 py-2 rounded-md'>
+            <span className='mb-2'>No Links Found</span>
+            <Link
+              href={'/setUp'}
+              className='capitalize underline text-blue-500'
+            >
+              Set one up
+            </Link>
+          </div>
         )
       ) : (
         <LinkSkeleton />

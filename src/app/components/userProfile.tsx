@@ -45,13 +45,13 @@ export default function UserProfile() {
               alt={`${user?.displayName} profile pic`}
               width={70}
               height={70}
-              className='rounded-full shadow-sm shadow-slate-400 transition-opacity duration-400 opacity-100'
+              className='rounded-md shadow-sm'
               priority
             />
           ) : (
             <p>No profile picture</p>
           )}
-          <h2 className='mt-4 text-pink-100 text-xl capitalize transition-opacity duration-400 font-black opacity-100'>
+          <h2 className='mt-4 text-xl capitalize transition-opacity duration-400 font-black opacity-100'>
             {`@${userName?.replace(' ', '')}`}
           </h2>
         </>

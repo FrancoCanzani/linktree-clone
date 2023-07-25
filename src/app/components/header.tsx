@@ -2,63 +2,47 @@
 
 // Components
 import Icon from './icon';
-import SignIn from './buttons/signIn';
 import SignOut from './buttons/signOut';
 
 // React / Custom hooks
-import { useState, useEffect } from 'react';
 import useScrollEffect from '@/utils/hooks/useScrollEffect';
 
 // NextJs Imports
 import Link from 'next/link';
 
-// Firebase imports
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { app } from '../../../firebase';
-
-const auth = getAuth(app);
+import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 
 export default function Header() {
-  const [isUser, setIsUser] = useState(false);
   const { isHidden } = useScrollEffect();
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsUser(true);
-      } else {
-        setIsUser(false);
-      }
-    });
-  }, []);
+  const { user } = useFirebaseUser();
 
   return (
     <header
-      className={`flex justify-between w-full xl:px-44 py-4 rounded-xl items-center transition-opacity duration-200 ${
+      className={`flex justify-between capitalize w-full mb-8 py-2 rounded-md items-center transition-opacity duration-200 ${
         isHidden
           ? 'opacity-0 pointer-events-none'
           : 'opacity-100 pointer-events-auto'
       }`}
     >
-      <Icon />
-      {isUser ? (
+      <Icon size={'text-xl'} />
+      {user ? (
         <>
           <nav>
             <Link
               href={'/setUp'}
-              className='px-6 py-3 mx-4 hover:bg-gray-300 rounded-xl'
+              className='px-3 py-2 mx-2 hover:bg-gray-100 rounded-md'
             >
               Set up Links
             </Link>
             <Link
-              href={'/yourLinks'}
-              className='px-6 py-3 hover:bg-gray-300 rounded-xl mr-4'
+              href={`/${user?.displayName?.replace(' ', '')}`}
+              className='px-3 py-2 mx-2 hover:bg-gray-100 rounded-md'
             >
               Your Links
             </Link>
             <Link
               href={'/setUp'}
-              className='px-6 py-3 mx-4 hover:bg-gray-300 rounded-xl'
+              className='px-3 py-2 mx-2 hover:bg-gray-100 rounded-md'
             >
               Appearance
             </Link>
@@ -66,7 +50,12 @@ export default function Header() {
           </nav>
         </>
       ) : (
-        <SignIn />
+        <Link
+          href={'/signIn'}
+          className='px-3 py-2 font-bold bg-black text-white hover:opacity-90 rounded-md'
+        >
+          Sign In
+        </Link>
       )}
     </header>
   );

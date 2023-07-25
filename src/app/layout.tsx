@@ -1,8 +1,13 @@
 import './globals.css';
+import localFont from 'next/font/local';
 import type { Metadata } from 'next';
-import { Source_Code_Pro } from 'next/font/google';
 
-const sourceCodePro = Source_Code_Pro({ subsets: ['latin'] });
+const basierSquare = localFont({
+  src: '../../src/public/fonts/Basier_Regular/Basier Regular Webfont/Basier-Square-regular-webfont/basiersquare-regular-webfont.woff',
+  display: 'swap',
+  weight: '400',
+  variable: '--font-basier-square',
+});
 
 import Header from './components/header';
 
@@ -18,8 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className={sourceCodePro.className}>
-        <Header />
+      <body className={`${basierSquare.variable} font-sans px-6 xl:px-44`}>
         {children}
       </body>
     </html>

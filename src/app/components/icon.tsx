@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
-export default function Icon() {
+export default function Icon({ size }: { size: string }) {
   return (
-    <Link href={'/'} className='text-4xl font-bold text-slate-900'>
-      repo.dev
+    <Link href={'/'} className={`${size} font-black`}>
+      dev.links
     </Link>
   );
 }
