@@ -29,16 +29,16 @@ export default function Header() {
         <>
           <nav>
             <Link
-              href={'/setUp'}
-              className='px-3 py-2 mx-2 hover:bg-gray-100 rounded-md'
-            >
-              Set up Links
-            </Link>
-            <Link
               href={`/${user?.displayName?.replace(' ', '')}`}
               className='px-3 py-2 mx-2 hover:bg-gray-100 rounded-md'
             >
               Your Links
+            </Link>
+            <Link
+              href={'/setUp'}
+              className='px-3 py-2 mx-2 hover:bg-gray-100 rounded-md'
+            >
+              Set up
             </Link>
             <Link
               href={'/setUp'}

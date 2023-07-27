@@ -32,7 +32,7 @@ export default function UserLink({ dataFetched, links }: UserLinkProps) {
                   className='m-2 flex w-full items-center justify-center gap-4 px-9 py-4 rounded-md bg-[conic-gradient(at_right,_var(--tw-gradient-stops))] from-indigo-200 via-slate-600 to-indigo-200 font-semibold'
                 >
                   <Image
-                    src={`https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+                    src={`https://www.google.com/s2/favicons?sz=256&domain_url=${encodeURIComponent(
                       url
                     )}`}
                     height={32}
@@ -50,10 +50,10 @@ export default function UserLink({ dataFetched, links }: UserLinkProps) {
           </div>
         ) : (
           <div className='bg-gray-100 flex flex-col items-center justify-center px-4 py-2 rounded-md'>
-            <span className='mb-2'>No Links Found</span>
+            <span className='mb-2 font-bold'>No Links Found</span>
             <Link
               href={'/setUp'}
-              className='capitalize underline text-blue-500'
+              className='capitalize underline font-bold text-blue-500'
             >
               Set one up
             </Link>

@@ -1,14 +1,17 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, setDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { User } from 'firebase/auth';
 
-export default async function createNewUser(user: User) {
+export default async function createNewUser(
+  user: User | null,
+  userHandle: string
+) {
   const docData = {
-    userId: user.uid,
-    username: user.displayName,
-    userPic: user.photoURL,
-    userEmail: user.email,
-    userHandle: null,
+    userId: user?.uid,
+    username: user?.displayName,
+    userPic: user?.photoURL,
+    userEmail: user?.email,
+    userHandle: userHandle,
     signUpDate: new Date(),
     links: [],
     portfolio: null,
@@ -18,8 +21,9 @@ export default async function createNewUser(user: User) {
   };
 
   try {
-    await setDoc(doc(db, 'users', user.uid), docData);
-    console.log(`Successfully created user: ${user.uid}`);
+    const userRef = doc(collection(db, 'users'), user?.uid);
+    await setDoc(userRef, docData);
+    console.log(`Successfully created user: ${user?.uid}`);
   } catch (error) {
     console.log(error);
   }

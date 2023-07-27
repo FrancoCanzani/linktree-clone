@@ -1,13 +1,12 @@
 'use client';
 
-import Icon from '../components/icon';
-import SignIn from '../components/buttons/googleSignIn';
+import Icon from '../../components/icon';
+import SignIn from '../../components/buttons/googleSignIn';
 import Link from 'next/link';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
-import createNewUser from '@/utils/functions/createNewUser';
-import checkUserExists from '@/utils/functions/checkUserExists';
+import checkUserExists from '@/utils/functions/checkUserHandleExists';
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 
 import { useRouter } from 'next/navigation';
@@ -19,16 +18,17 @@ export default function SignInPage() {
   useEffect(() => {
     async function checkAndCreateUser() {
       if (user) {
-        const userExists = await checkUserExists(user.uid); // Await the promise
+        const userExists = await checkUserExists(user.uid);
         if (!userExists) {
-          await createNewUser(user); // Await the promise
+          push('/setUp');
+        } else {
+          push('/');
         }
-        push('/');
       }
     }
 
     checkAndCreateUser();
-  }, [user]);
+  }, [user, push]);
 
   return (
     <div className='flex h-screen w-full flex-col items-center justify-center'>
