@@ -1,58 +1,72 @@
 'use client';
 
+// Components
 import Icon from '../components/icon';
-import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
+import Spinner from '@/app/components/spinner';
+
+// Nextjs
 import Image from 'next/image';
 import Link from 'next/link';
+
+// Utils
 import checkUserHandleExists from '@/utils/functions/checkUserHandleExists';
 import createNewUser from '@/utils/functions/createNewUser';
-import { FormEvent, useState } from 'react';
+
+// Hooks
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
+
+// TS
+import { ChangeEvent, FormEvent } from 'react';
 
 export default function CreateYourAccount() {
   const { push } = useRouter();
   const { user } = useFirebaseUser();
   const [userHandle, setUserHandle] = useState('');
-  const [error, setError] = useState('');
+  const [inputError, setInputError] = useState('');
+  const [submitError, setSubmitError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!error && userHandle) {
-      // Check if the user handle already exists
-      setIsLoading(true);
-      const handleExists = await checkUserHandleExists(userHandle);
-      setIsLoading(false);
-      if (handleExists) {
-        setError('Username is already taken');
-      } else {
-        setError('');
-        createNewUser(user, userHandle);
-        push('/yourLinks');
-        console.log('Submitted username:', userHandle);
+    try {
+      if (!inputError && userHandle) {
+        // Check if the user handle already exists
+        setIsLoading(true);
+        const handleExists = await checkUserHandleExists(userHandle);
+        setIsLoading(false);
+        if (handleExists) {
+          setInputError('Username is already taken.');
+        } else {
+          setInputError('');
+          setSubmitError('');
+          createNewUser(user, userHandle);
+          push('/yourLinks');
+        }
       }
-    } else {
-      // Handle error or display an appropriate message to the user
-      console.log('Form submission is not valid');
+    } catch (error) {
+      setSubmitError('Something went wrong. Try again.');
     }
   }
 
-  async function handleChange(e) {
-    const value = e.target.value;
-    const pattern = /^\S+$/;
+  async function handleChange(e: ChangeEvent<HTMLInputElement>) {
+    const value: string = e.target.value;
+    // Regular expression to match alphanumeric characters
+    const pattern: RegExp = /^[a-zA-Z0-9]+$/;
 
-    if (!pattern.test(value)) {
-      setError('Username must not be empty');
-      setTimeout(() => {
-        setError('');
-      }, 4000);
-    } else if (value.length < 3 || value.length > 20) {
-      setError('Username must be between 3 and 20 characters');
+    // Remove leading and trailing white spaces
+    const trimmedValue = value.trim();
+
+    if (!pattern.test(trimmedValue)) {
+      setInputError('Username must contain only letters and numbers.');
+    } else if (trimmedValue.length < 3 || trimmedValue.length > 20) {
+      setInputError('Username must be between 3 and 20 characters.');
     } else {
-      setError('');
+      setInputError('');
     }
 
-    setUserHandle(value);
+    setUserHandle(trimmedValue);
   }
 
   return (
@@ -99,7 +113,7 @@ export default function CreateYourAccount() {
           </label>
           <input
             className={`${
-              error.length > 0 ? 'border-red-500' : ''
+              inputError.length > 0 ? 'border-red-500' : ''
             } py-3 placeholder:text-xl appearance-none outline-none text-xl px-3 border-2 rounded-md`}
             type='text'
             id='handle'
@@ -110,7 +124,14 @@ export default function CreateYourAccount() {
             value={userHandle}
             onChange={handleChange}
           />
-          {error.length > 0 && <span className='text-red-500'>{error}</span>}
+          {inputError.length > 0 && (
+            <span className='text-red-500'>{inputError}</span>
+          )}
+          <ul className='text-xs mt-3'>
+            <li>Only letters and numbers</li>
+            <li>Min. 3 characters and max. 20 characters</li>
+            <li></li>
+          </ul>
 
           <p className='text-xs mt-16 text-center capitalize'>
             By clicking create account, you agree to our{' '}
@@ -126,8 +147,9 @@ export default function CreateYourAccount() {
             type='submit'
             className='p-2 px-3 flex items-center justify-center mt-4 hover:opacity-90 bg-black font-bold text-white rounded-md'
           >
-            {isLoading ? spinner : 'Create Account'}
+            {isLoading ? <Spinner color='white' /> : 'Create Account'}
           </button>
+          <span className='text-red-500 w-full text-center'>{submitError}</span>
         </form>
         <div className='mt-6 text-xs mx-auto my-0 text-center max-w-md bg-gray-100 rounded-md p-2'>
           Already have an account?{' '}
@@ -142,25 +164,3 @@ export default function CreateYourAccount() {
     </div>
   );
 }
-
-const spinner = (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    width='25'
-    height='25'
-    viewBox='0 0 24 24'
-  >
-    <path
-      fill='currentColor'
-      d='M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z'
-    >
-      <animateTransform
-        attributeName='transform'
-        dur='0.75s'
-        repeatCount='indefinite'
-        type='rotate'
-        values='0 12 12;360 12 12'
-      />
-    </path>
-  </svg>
-);

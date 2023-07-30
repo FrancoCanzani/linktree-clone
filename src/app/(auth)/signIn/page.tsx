@@ -1,8 +1,8 @@
 'use client';
 
 import Icon from '../../components/icon';
-import SignIn from '../../components/buttons/googleSignIn';
 import Link from 'next/link';
+import GoogleSignIn from '@/app/components/buttons/googleSignIn';
 
 import { useEffect } from 'react';
 
@@ -19,10 +19,11 @@ export default function SignInPage() {
     async function checkAndCreateUser() {
       if (user) {
         const userExists = await checkUserExists(user.uid);
+
         if (!userExists) {
-          push('/setUp');
+          push('/yourLinks');
         } else {
-          push('/');
+          push('/createYourAccount');
         }
       }
     }
@@ -31,13 +32,13 @@ export default function SignInPage() {
   }, [user, push]);
 
   return (
-    <div className='flex h-screen w-full flex-col items-center justify-center'>
+    <div className='flex px-4 xl:px-44 h-screen w-full flex-col items-center justify-center'>
       <div className='py-10 px-8 w-1/3 rounded-xl border-2 flex justify-start flex-col bg-gray-50'>
         <Icon size={'text-3xl'} />
         <h2 className='mt-8 font-black text-xl'>Sign In</h2>
         <h4 className='text-sm text-gray-600'>to continue to dev.links</h4>
         <div className='mt-5 w-full flex flex-col justify-center'>
-          <SignIn />
+          <GoogleSignIn />
         </div>
       </div>
       <p className='text-sm mt-4 capitalize'>

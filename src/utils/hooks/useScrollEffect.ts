@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
 export default function useScrollEffect() {
-  const [isHidden, setIsHidden] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   useEffect(() => {
     // Function to handle the scroll event
     function handleScroll() {
-      const isScrolledDown = window.scrollY > 50; // Change this value to adjust when to hide the footer
-      setIsHidden(isScrolledDown);
+      const isScrolledDown = window.scrollY > 50; // Change this value to adjust when to modify the header
+      setIsScrolling(isScrolledDown);
     }
 
     // Add the event listener when the component mounts
@@ -19,5 +19,5 @@ export default function useScrollEffect() {
     };
   }, []);
 
-  return { isHidden };
+  return { isScrolling };
 }

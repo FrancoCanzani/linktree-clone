@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 
@@ -15,19 +15,24 @@ function useFetchLinks(): { links: Link[]; dataFetched: boolean } {
 
   useEffect(() => {
     if (user) {
-      const q = query(collection(db, 'links'), where('userId', '==', user.uid));
-      getDocs(q)
-        .then((querySnapshot) => {
-          const linkData = querySnapshot.docs.map((doc) => doc.data() as Link);
-          setLinks(linkData);
-          setDataFetched(true);
-        })
-        .catch((error) => {
-          console.error('Error fetching links:', error);
+      const userRef = doc(db, 'users', user.uid);
+      const unsub = onSnapshot(userRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.data();
+          if (userData && userData.links) {
+            setLinks(userData.links);
+            setDataFetched(true);
+          }
+        } else {
           setLinks([]);
-        });
+          setDataFetched(true);
+        }
+      });
+
+      return () => unsub();
     } else {
       setLinks([]);
+      setDataFetched(true);
     }
   }, [user]);
 

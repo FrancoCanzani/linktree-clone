@@ -1,10 +1,15 @@
-import { FormEvent } from 'react';
+'use client';
+
+import { collection, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { db } from '../../../firebase';
+import { FormEvent, useState } from 'react';
+import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
+import Spinner from '@/app/components/spinner';
 
 interface FormProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleClose: () => void;
-  handleAddLink: (e: FormEvent) => Promise<void>;
   link: Link;
   setLink: React.Dispatch<React.SetStateAction<Link>>;
 }
@@ -18,10 +23,40 @@ export default function CreateLinkForm({
   isOpen,
   setIsOpen,
   handleClose,
-  handleAddLink,
   link,
   setLink,
 }: FormProps) {
+  const { user } = useFirebaseUser();
+  const [isAddingLink, setIsAddingLink] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
+
+  async function handleAddLinksToUser(
+    event: FormEvent,
+    userId: string | undefined,
+    link: Link
+  ) {
+    event.preventDefault();
+    try {
+      setIsAddingLink(true);
+      const userRef = doc(collection(db, 'users'), userId);
+      await updateDoc(userRef, {
+        links: arrayUnion(link),
+      });
+      setLink({
+        linkURL: '',
+        linkDescription: '',
+      });
+      setIsAdded(true);
+      setIsAddingLink(false);
+      setTimeout(() => {
+        setIsAdded(false);
+      }, 4000);
+      console.log('Successfully added links to the user.');
+    } catch (error) {
+      console.log('Error adding links to the user:', error);
+    }
+  }
+
   return (
     <div className='bg-gray-100 w-1/2 relative p-3 rounded-md mb-8 flex flex-col items-center'>
       <button
@@ -52,7 +87,7 @@ export default function CreateLinkForm({
         ''
       )}
       <form
-        onSubmit={handleAddLink}
+        onSubmit={(e) => handleAddLinksToUser(e, user?.uid, link)}
         className={`${isOpen ? 'flex' : 'hidden'} flex w-full pb-2 flex-col`}
       >
         <div className='flex flex-col px-4'>
@@ -97,10 +132,12 @@ export default function CreateLinkForm({
               }
             />
             <button
-              className='px-2 ml-2 w-28 bg-black text-white hover:opacity-90 font-semibold rounded-md'
+              className={`${
+                isAdded && 'border-green-600 border-2'
+              } px-2 flex items-center justify-center ml-2 w-28 bg-black text-white hover:opacity-90 font-semibold rounded-md`}
               type='submit'
             >
-              Add
+              {isAddingLink ? <Spinner color='white' /> : 'Add'}
             </button>
           </div>
         </div>
