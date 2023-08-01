@@ -1,4 +1,4 @@
-import AdminSidebar from '../components/adminSidebar';
+import AdminSidebar from '../components/admin/adminSidebar';
 import Header from '../components/header';
 
 export default function SetUpLayout({

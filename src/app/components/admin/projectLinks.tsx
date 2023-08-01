@@ -1,10 +1,12 @@
+'use client';
+
 import useFetchLinks from '@/utils/hooks/useFetchLinks';
 import Image from 'next/image';
 import { transformURL } from '@/utils/functions/transformURL';
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 import { User } from 'firebase/auth';
 import { doc, collection, updateDoc, arrayRemove } from 'firebase/firestore';
-import { db } from '../../../firebase';
+import { db } from '../../../../firebase';
 
 interface Link {
   linkURL: string;

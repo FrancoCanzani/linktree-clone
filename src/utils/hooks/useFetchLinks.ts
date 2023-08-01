@@ -19,8 +19,8 @@ function useFetchLinks(): { links: Link[]; dataFetched: boolean } {
       const unsub = onSnapshot(userRef, (snapshot) => {
         if (snapshot.exists()) {
           const userData = snapshot.data();
-          if (userData && userData.links) {
-            setLinks(userData.links);
+          if (userData && userData.projectLinks) {
+            setLinks(userData.projectLinks);
             setDataFetched(true);
           }
         } else {

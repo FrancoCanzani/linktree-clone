@@ -1,36 +1,36 @@
 'use client';
 
 import { collection, doc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { db } from '../../../firebase';
+import { db } from '../../../../firebase';
 import { FormEvent, useState } from 'react';
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 import Spinner from '@/app/components/spinner';
-
-interface FormProps {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleClose: () => void;
-  link: Link;
-  setLink: React.Dispatch<React.SetStateAction<Link>>;
-}
 
 interface Link {
   linkURL: string;
   linkDescription: string;
 }
 
-export default function CreateLinkForm({
-  isOpen,
-  setIsOpen,
-  handleClose,
-  link,
-  setLink,
-}: FormProps) {
+export default function CreateProjectLinkForm() {
   const { user } = useFirebaseUser();
   const [isAddingLink, setIsAddingLink] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
-  async function handleAddLinksToUser(
+  const [link, setLink] = useState<Link>({
+    linkURL: '',
+    linkDescription: '',
+  });
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setLink({
+      linkURL: '',
+      linkDescription: '',
+    });
+  };
+
+  async function handleAddProjectLinksToUser(
     event: FormEvent,
     userId: string | undefined,
     link: Link
@@ -40,7 +40,7 @@ export default function CreateLinkForm({
       setIsAddingLink(true);
       const userRef = doc(collection(db, 'users'), userId);
       await updateDoc(userRef, {
-        links: arrayUnion(link),
+        projectLinks: arrayUnion(link),
       });
       setLink({
         linkURL: '',
@@ -63,7 +63,7 @@ export default function CreateLinkForm({
         onClick={() => (isOpen ? setIsOpen(false) : setIsOpen(true))}
         className='w-full p-3 font-semibold text-xl capitalize'
       >
-        New Link
+        New Project Link
       </button>
       {isOpen ? (
         <button
@@ -87,7 +87,7 @@ export default function CreateLinkForm({
         ''
       )}
       <form
-        onSubmit={(e) => handleAddLinksToUser(e, user?.uid, link)}
+        onSubmit={(e) => handleAddProjectLinksToUser(e, user?.uid, link)}
         className={`${isOpen ? 'flex' : 'hidden'} flex w-full pb-2 flex-col`}
       >
         <div className='flex flex-col px-4'>

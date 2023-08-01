@@ -3,12 +3,9 @@
 import Icon from '../../components/icon';
 import Link from 'next/link';
 import GoogleSignIn from '@/app/components/buttons/googleSignIn';
-
 import { useEffect } from 'react';
-
-import checkUserExists from '@/utils/functions/checkUserHandleExists';
+import checkUserExists from '@/utils/functions/checkUserExists';
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
-
 import { useRouter } from 'next/navigation';
 
 export default function SignInPage() {
@@ -16,19 +13,22 @@ export default function SignInPage() {
   const { push } = useRouter();
 
   useEffect(() => {
-    async function checkAndCreateUser() {
-      if (user) {
-        const userExists = await checkUserExists(user.uid);
+    async function checkAndRedirect() {
+      try {
+        if (user) {
+          const userExists = await checkUserExists(user);
 
-        if (!userExists) {
-          push('/yourLinks');
-        } else {
-          push('/createYourAccount');
+          if (userExists) {
+            push('/yourLinks');
+          } else {
+            push('/createYourAccount');
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
     }
-
-    checkAndCreateUser();
+    checkAndRedirect();
   }, [user, push]);
 
   return (
