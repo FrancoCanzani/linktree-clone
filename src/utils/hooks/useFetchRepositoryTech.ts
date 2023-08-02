@@ -25,7 +25,7 @@ export default function useFetchRepositoryTech({
         setRepositoryTech(data);
         setError(undefined);
       } catch (error) {
-        // This line is added to avoid Argument of type 'unknown' error is not assignable... error
+        // This line is added to avoid Argument of type 'unknown' error is not assignable...
         if (error instanceof Error) {
           setError(error);
         }
