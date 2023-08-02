@@ -11,19 +11,17 @@ function LegendComponent({ technologies }) {
 
   // Realistic color mapping for technologies
   const technologyColors = {
-    HTML: 'bg-blue-500',
-    TypeScript: 'bg-indigo-500',
+    HTML: 'bg-red-500',
+    TypeScript: 'bg-blue-500',
     CSS: 'bg-pink-500',
     JavaScript: 'bg-yellow-500',
-    React: 'bg-teal-500',
-    Python: 'bg-green-500',
-    Java: 'bg-orange-500',
-    Ruby: 'bg-red-500',
-    PHP: 'bg-purple-500',
+    Python: 'bg-yellow-400',
+    Java: 'bg-orange-800',
+    Ruby: 'bg-red-300',
+    PHP: 'bg-indigo-700',
     Go: 'bg-blue-600',
     Rust: 'bg-orange-600',
-    C: 'bg-green-600',
-    CPlusPlus: 'bg-pink-600',
+    C: 'bg-black',
     Swift: 'bg-red-600',
     Kotlin: 'bg-indigo-600',
     Other: 'bg-gray-500', // Default color for unmatched technologies
@@ -42,8 +40,7 @@ function LegendComponent({ technologies }) {
   let leftOffset = 0; // To track the left position for each technology span
 
   return (
-    <div className='mt-4'>
-      {/* Bar */}
+    <div className='mt-2'>
       <div className='w-full h-2 bg-gray-300 rounded-md relative'>
         {technologies.map((tech, index) => {
           const style = { width: `${tech.percent}%`, left: `${leftOffset}%` };
@@ -58,7 +55,6 @@ function LegendComponent({ technologies }) {
         })}
       </div>
 
-      {/* Technology list */}
       <div className='mt-2 flex gap-2'>
         {technologies.map((tech, index) => (
           <div key={index} className='flex items-center'>
