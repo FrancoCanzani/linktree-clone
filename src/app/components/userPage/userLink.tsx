@@ -2,7 +2,7 @@
 import Image from 'next/image';
 
 // Skeleton
-import LinkSkeleton from './skeletons/linkSkeleton';
+import LinkSkeleton from '../skeletons/linkSkeleton';
 
 // Firebase types
 import { DocumentData } from 'firebase/firestore';

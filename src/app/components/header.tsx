@@ -19,11 +19,11 @@ export default function Header() {
 
   return (
     <header
-      className={` z-10 overflow-hidden sticky top-0 w-full rounded-b-md items-center transition-all duration-100 ease-in-out ${
+      className={`z-10 overflow-hidden sticky top-0 w-full rounded-b-md items-center transition-all duration-100 ease-in-out ${
         isScrolling ? 'shadow-md' : 'shadow-none'
       }`}
     >
-      <div className='backdrop-blur flex justify-between py-2 px4 xl:px-44 backdrop-filter'>
+      <div className='backdrop-blur flex justify-between py-2 px-4 lg:px-8 xl:px-24 backdrop-filter'>
         <Icon size={'text-xl'} />
         {user ? (
           <>

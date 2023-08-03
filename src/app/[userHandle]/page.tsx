@@ -1,9 +1,9 @@
 'use client';
 
 // Components
-import UserProfile from '../components/userProfile';
-import UserLink from '../components/userLink';
-import UserRepos from '../components/userRepos';
+import UserProfile from '../components/userPage/userProfile';
+import UserLink from '../components/userPage/userLink';
+import UserRepos from '../components/userPage/userRepos';
 // utils
 import useFetchLinks from '@/utils/hooks/useFetchLinks';
 

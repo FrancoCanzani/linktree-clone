@@ -11,10 +11,10 @@ interface Repository {
 
 function useFetchRepositories(): {
   repos: Repository[];
-  dataFetched: boolean;
+  reposDataFetched: boolean;
 } {
   const [repos, setRepos] = useState<Repository[]>([]);
-  const [dataFetched, setDataFetched] = useState(false);
+  const [reposDataFetched, setDataFetched] = useState(false);
   const { user } = useFirebaseUser();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ function useFetchRepositories(): {
     }
   }, [user]);
 
-  return { repos, dataFetched };
+  return { repos, reposDataFetched };
 }
 
 export default useFetchRepositories;

@@ -3,7 +3,7 @@ import { DocumentData } from 'firebase/firestore';
 import { transformURL } from '@/utils/functions/transformURL';
 import useFetchRepositories from '@/utils/hooks/useFetchRepositories';
 import useFetchRepositoryTech from '@/utils/hooks/useFetchRepositoryTech';
-import LegendComponent from './repositoryTechBarList';
+import TechnologiesLegend from './technologiesLegend';
 
 const UserRepos = () => {
   const { repos, dataFetched } = useFetchRepositories();
@@ -63,7 +63,7 @@ const UserRepoItem = ({ repo }: UserRepoItemProps) => {
         {error ? (
           <span>Error fetching tech data</span>
         ) : (
-          <LegendComponent technologies={technologies} />
+          <TechnologiesLegend technologies={technologies} />
         )}
       </div>
     </a>

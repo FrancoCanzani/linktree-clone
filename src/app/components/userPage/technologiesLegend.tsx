@@ -1,6 +1,12 @@
-import React from 'react';
+import technologyColors from '@/utils/technologyColors';
 
-function LegendComponent({ technologies }) {
+export interface Technology {
+  name: string;
+  bytesUsed: number;
+  percent?: number;
+}
+
+function TechnologiesLegend({ technologies }: { technologies: Technology[] }) {
   // Sort technologies in descending order based on bytesUsed
   technologies.sort((a, b) => b.bytesUsed - a.bytesUsed);
 
@@ -9,31 +15,13 @@ function LegendComponent({ technologies }) {
     0
   );
 
-  // Realistic color mapping for technologies
-  const technologyColors = {
-    HTML: 'bg-red-500',
-    TypeScript: 'bg-blue-500',
-    CSS: 'bg-pink-500',
-    JavaScript: 'bg-yellow-500',
-    Python: 'bg-yellow-400',
-    Java: 'bg-orange-800',
-    Ruby: 'bg-red-300',
-    PHP: 'bg-indigo-700',
-    Go: 'bg-blue-600',
-    Rust: 'bg-orange-600',
-    C: 'bg-black',
-    Swift: 'bg-red-600',
-    Kotlin: 'bg-indigo-600',
-    Other: 'bg-gray-500', // Default color for unmatched technologies
-  };
-
   // Calculate the percentage of bytes for each technology
   technologies.forEach((tech) => {
     tech.percent = (tech.bytesUsed / totalBytes) * 100;
   });
 
   // Function to generate a color class based on the name of the technology
-  const getColorClass = (name) => {
+  const getColorClass = (name: string) => {
     return technologyColors[name] || technologyColors['Other']; // Use default color for unmatched technologies
   };
 
@@ -44,7 +32,7 @@ function LegendComponent({ technologies }) {
       <div className='w-full h-2 bg-gray-300 rounded-md relative'>
         {technologies.map((tech, index) => {
           const style = { width: `${tech.percent}%`, left: `${leftOffset}%` };
-          leftOffset += tech.percent;
+          leftOffset += tech.percent!;
           return (
             <span
               key={index}
@@ -71,4 +59,4 @@ function LegendComponent({ technologies }) {
   );
 }
 
-export default LegendComponent;
+export default TechnologiesLegend;
