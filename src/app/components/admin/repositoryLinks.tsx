@@ -15,7 +15,7 @@ interface Repository {
 }
 
 export default function RepositoryLinks() {
-  const { repos, dataFetched } = useFetchRepositories();
+  const { repos, reposDataFetched } = useFetchRepositories();
   const { user } = useFirebaseUser();
 
   async function handleDeleteLink(user: User | null, linkToDelete: Repository) {

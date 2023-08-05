@@ -2,7 +2,7 @@
 
 import Icon from '../../components/icon';
 import Link from 'next/link';
-import GoogleSignIn from '@/app/components/buttons/googleSignIn';
+import GoogleSignIn from '@/app/components/auth/googleSignIn';
 import { useEffect } from 'react';
 import checkUserExists from '@/utils/functions/checkUserExists';
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';

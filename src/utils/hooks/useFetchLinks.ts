@@ -3,14 +3,14 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 
-interface Link {
-  linkURL: string;
-  linkDescription: string;
-}
-
-function useFetchLinks(): { links: Link[]; dataFetched: boolean } {
-  const [links, setLinks] = useState<Link[]>([]);
-  const [dataFetched, setDataFetched] = useState(false);
+function useFetchLinks(): {
+  links: string[];
+  repositories: string[];
+  fetchingStatus: string;
+} {
+  const [links, setLinks] = useState<string[]>([]);
+  const [repositories, setRepositories] = useState<string[]>([]);
+  const [fetchingStatus, setFetchingStatus] = useState('');
   const { user } = useFirebaseUser();
 
   useEffect(() => {
@@ -19,24 +19,26 @@ function useFetchLinks(): { links: Link[]; dataFetched: boolean } {
       const unsub = onSnapshot(userRef, (snapshot) => {
         if (snapshot.exists()) {
           const userData = snapshot.data();
-          if (userData && userData.projectLinks) {
-            setLinks(userData.projectLinks);
-            setDataFetched(true);
+          if (userData && userData.link && userData.repository) {
+            setLinks(userData.link);
+            setRepositories(userData.repository);
           }
         } else {
           setLinks([]);
-          setDataFetched(true);
+          setRepositories([]);
+          setFetchingStatus('fetched');
         }
       });
 
       return () => unsub();
     } else {
       setLinks([]);
-      setDataFetched(true);
+      setRepositories([]);
+      setFetchingStatus('error');
     }
   }, [user]);
 
-  return { links, dataFetched };
+  return { links, repositories, fetchingStatus };
 }
 
 export default useFetchLinks;

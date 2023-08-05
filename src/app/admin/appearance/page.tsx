@@ -1,3 +1,3 @@
 export default function Appearance() {
-  return <p>Appearance</p>;
+  return <h1>Hola</h1>;
 }

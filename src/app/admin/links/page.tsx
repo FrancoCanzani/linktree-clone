@@ -1,15 +1,27 @@
-import ProjectLinks from '@/app/components/admin/projectLinks';
-import CreateProjectLinkForm from '@/app/components/admin/createProjectLinkForm';
-import CreateRepoLinkForm from '@/app/components/admin/createRepoLinkForm';
-import RepositoryLinks from '@/app/components/admin/repositoryLinks';
+'use client';
 
-export default function Links() {
+import { useState } from 'react';
+
+import LinkFormOpener from '@/app/components/admin/linkFormOpener';
+import LinkForm from '@/app/components/admin/linkForm';
+import Links from '@/app/components/admin/links';
+
+export default function Appearance() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [linkType, setLinkType] = useState('link');
+
   return (
-    <section className='flex flex-col min-h-full w-full items-center'>
-      <CreateProjectLinkForm />
-      <ProjectLinks />
-      <CreateRepoLinkForm />
-      <RepositoryLinks />
+    <section className='w-full flex-col flex items-center'>
+      {isOpen ? (
+        <LinkForm
+          setIsOpen={setIsOpen}
+          linkType={linkType}
+          setLinkType={setLinkType}
+        />
+      ) : (
+        <LinkFormOpener isOpen={isOpen} setIsOpen={setIsOpen} />
+      )}
+      <Links />
     </section>
   );
 }

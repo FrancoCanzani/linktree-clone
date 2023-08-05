@@ -13,12 +13,12 @@ export default async function createNewUser(
     userEmail: user?.email,
     userHandle: userHandle,
     signUpDate: new Date(),
-    projectLinks: [],
-    repositoryLinks: [],
+    link: [],
+    repository: [],
     portfolio: null,
     userTitle: null,
-    monetizationLinks: [],
-    socialLinks: [],
+    monetization: [],
+    social: [],
   };
 
   try {

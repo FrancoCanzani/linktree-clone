@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@next/font": "^13.4.12",
-    "@tremor/react": "^3.6.0",
     "@types/node": "20.4.2",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.14",

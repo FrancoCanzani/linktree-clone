@@ -2,7 +2,7 @@
 
 // Components
 import Icon from './icon';
-import SignOut from './buttons/signOut';
+import SignOut from './auth/signOut';
 
 // React / Custom hooks
 
