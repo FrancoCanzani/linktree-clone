@@ -16,6 +16,7 @@ const LinkTypeSelector = ({
     <div className='flex flex-col items-center justify-center p-2'>
       <button
         onClick={() => setLinkType(text)}
+        type='button'
         className={`${
           linkType == text ? 'border-black' : 'border-gray-200'
         } p-4 border-2 hover:bg-gray-100 bg-white rounded-md mb-2`}

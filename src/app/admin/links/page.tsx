@@ -8,16 +8,11 @@ import Links from '@/app/components/admin/links';
 
 export default function Appearance() {
   const [isOpen, setIsOpen] = useState(false);
-  const [linkType, setLinkType] = useState('link');
 
   return (
     <section className='w-full flex-col flex items-center'>
       {isOpen ? (
-        <LinkForm
-          setIsOpen={setIsOpen}
-          linkType={linkType}
-          setLinkType={setLinkType}
-        />
+        <LinkForm setIsOpen={setIsOpen} />
       ) : (
         <LinkFormOpener isOpen={isOpen} setIsOpen={setIsOpen} />
       )}

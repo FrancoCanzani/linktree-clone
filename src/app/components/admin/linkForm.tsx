@@ -7,6 +7,8 @@ import { FormEvent, useState } from 'react';
 // Utils / Hooks
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 import validateUrl from '@/utils/functions/validateUrl';
+import { v4 as uuidv4 } from 'uuid';
+import LinkType from '@/utils/types';
 
 // Components
 import CloseButton from '../buttons/closeButton';
@@ -19,6 +21,7 @@ import HyperlinkSVG from '@/public/svg/hyperlink';
 import { collection, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../../../firebase';
 import { User } from 'firebase/auth';
+import ErrorMessage from '../form/errorMessage';
 
 type CustomUser = {
   user: User | null;
@@ -26,34 +29,34 @@ type CustomUser = {
 
 const LinkForm = ({
   setIsOpen,
-  linkType,
-  setLinkType,
 }: {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  linkType: string;
-  setLinkType: Dispatch<SetStateAction<string>>;
 }) => {
-  const [link, setLink] = useState('');
+  const [link, setLink] = useState<LinkType>({
+    Url: '',
+    key: uuidv4(),
+  });
   const [formStatus, setFormStatus] = useState('');
   const [isUrlValid, setIsUrlValid] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [linkType, setLinkType] = useState('link');
 
   const { user }: CustomUser = useFirebaseUser();
 
-  function handleLinkChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setLink(e.target.value);
+  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLink((prev) => ({ ...prev, Url: e.target.value }));
     setIsTyping(true);
 
     if (isTyping && e.target.value.trim() !== '') {
       setIsUrlValid(validateUrl(e.target.value));
     }
-  }
+  };
 
   async function handleAddLink(
     event: FormEvent,
     userId: string | undefined,
     type: string,
-    linkValue: string
+    linkValue: LinkType
   ) {
     event.preventDefault();
     try {
@@ -69,7 +72,10 @@ const LinkForm = ({
         [fieldToUpdate]: arrayUnion(linkValue),
       });
 
-      setLink('');
+      setLink({
+        Url: '',
+        key: uuidv4(),
+      });
       setFormStatus('Added');
       setTimeout(() => {
         setFormStatus('');
@@ -100,7 +106,7 @@ const LinkForm = ({
             autoFocus
             autoComplete='off'
             placeholder='URL'
-            value={link}
+            value={link.Url}
             onChange={handleLinkChange}
             className={`px-3 border-2 ${
               isUrlValid ? 'border-gray-200' : 'border-red-500'
@@ -111,15 +117,11 @@ const LinkForm = ({
         </div>
 
         {isTyping && !isUrlValid && (
-          <span className='text-red-500 capitalize'>
-            Please enter a valid URL.
-          </span>
+          <ErrorMessage error='Please enter a valid URL.' />
         )}
 
         {formStatus === 'Error' && (
-          <span className='text-red-500 capitalize'>
-            Something went wrong. Please try again!
-          </span>
+          <ErrorMessage error='Something went wrong. Please try again.' />
         )}
       </div>
 
