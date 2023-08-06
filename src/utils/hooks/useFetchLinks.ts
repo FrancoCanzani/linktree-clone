@@ -36,7 +36,7 @@ export default function useFetchLinks(): {
     } else {
       setLinks([]);
       setRepositories([]);
-      setFetchingStatus('error'); // Set to 'not_fetched' when user is not available
+      setFetchingStatus('error');
     }
   }, [user]);
 
