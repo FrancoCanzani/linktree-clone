@@ -6,9 +6,7 @@ import { FormEvent, useState } from 'react';
 
 // Utils / Hooks
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
-import validateUrl from '@/utils/functions/validateUrl';
-import { v4 as uuidv4 } from 'uuid';
-import LinkType from '@/utils/types';
+import useURLMetadata from '@/utils/hooks/useUrlMetadata';
 
 // Components
 import CloseButton from '../buttons/closeButton';
@@ -27,68 +25,47 @@ type CustomUser = {
   user: User | null;
 };
 
-const LinkForm = ({
+export default function LinkForm({
   setIsOpen,
 }: {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-}) => {
-  const [link, setLink] = useState<LinkType>({
-    Url: '',
-    key: uuidv4(),
-  });
+}) {
+  const [userInput, setUserInput] = useState<string>('');
   const [formStatus, setFormStatus] = useState('');
-  const [isUrlValid, setIsUrlValid] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const [linkType, setLinkType] = useState('link');
-
   const { user }: CustomUser = useFirebaseUser();
+  // Use the useURLMetadata hook to get metadata
+  const metadata = useURLMetadata(userInput);
 
-  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLink((prev) => ({ ...prev, Url: e.target.value }));
-    setIsTyping(true);
-
-    if (isTyping && e.target.value.trim() !== '') {
-      setIsUrlValid(validateUrl(e.target.value));
-    }
-  };
-
-  async function handleAddLink(
-    event: FormEvent,
-    userId: string | undefined,
-    type: string,
-    linkValue: LinkType
-  ) {
+  async function handleAddLink(event: FormEvent, type: string) {
     event.preventDefault();
-    try {
-      if (!isUrlValid) {
-        return;
+    setFormStatus('Adding');
+
+    if (metadata && metadata.url) {
+      try {
+        const userRef = doc(collection(db, 'users'), user?.uid);
+        const fieldToUpdate = type;
+
+        // Access metadata properties directly
+        await updateDoc(userRef, {
+          [fieldToUpdate]: arrayUnion(metadata),
+        });
+
+        setUserInput('');
+        setFormStatus('Added');
+        setTimeout(() => {
+          setFormStatus('');
+        }, 4000);
+      } catch (error) {
+        console.error('Error adding link:', error);
+        setFormStatus('Error');
       }
-
-      setFormStatus('Adding');
-      const userRef = doc(collection(db, 'users'), userId);
-      const fieldToUpdate = type;
-
-      await updateDoc(userRef, {
-        [fieldToUpdate]: arrayUnion(linkValue),
-      });
-
-      setLink({
-        Url: '',
-        key: uuidv4(),
-      });
-      setFormStatus('Added');
-      setTimeout(() => {
-        setFormStatus('');
-      }, 4000);
-    } catch (error) {
-      setFormStatus('Error');
     }
-    setIsTyping(false);
   }
 
   return (
     <form
-      onSubmit={(e) => handleAddLink(e, user?.uid, linkType, link)}
+      onSubmit={(e) => handleAddLink(e, linkType)}
       className='bg-gray-200 capitalize w-2/3 lg:w-1/2 p-4 rounded-md'
     >
       <div className='flex justify-between items-center'>
@@ -106,19 +83,12 @@ const LinkForm = ({
             autoFocus
             autoComplete='off'
             placeholder='URL'
-            value={link.Url}
-            onChange={handleLinkChange}
-            className={`px-3 border-2 ${
-              isUrlValid ? 'border-gray-200' : 'border-red-500'
-            } hover:border-black py-2 w-full rounded-md`}
-            aria-invalid={!isUrlValid}
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            className={`px-3 border-2  hover:border-black py-2 w-full rounded-md`}
           />
           <SubmitButton text='Add' formStatus={formStatus} />
         </div>
-
-        {isTyping && !isUrlValid && (
-          <ErrorMessage error='Please enter a valid URL.' />
-        )}
 
         {formStatus === 'Error' && (
           <ErrorMessage error='Something went wrong. Please try again.' />
@@ -149,6 +119,4 @@ const LinkForm = ({
       </div>
     </form>
   );
-};
-
-export default LinkForm;
+}
