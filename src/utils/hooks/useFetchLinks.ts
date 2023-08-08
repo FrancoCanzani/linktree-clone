@@ -5,11 +5,11 @@ import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 import LinkType from '../types';
 
 export default function useFetchLinks(): {
-  links: LinkType[];
+  generalLinks: LinkType[];
   repositories: LinkType[];
   fetchingStatus: string;
 } {
-  const [links, setLinks] = useState<LinkType[]>([]);
+  const [generalLinks, setGeneralLinks] = useState<LinkType[]>([]);
   const [repositories, setRepositories] = useState<LinkType[]>([]);
   const [fetchingStatus, setFetchingStatus] = useState('idle'); // Set initial status to 'idle'
   const { user } = useFirebaseUser();
@@ -20,13 +20,13 @@ export default function useFetchLinks(): {
       const unsub = onSnapshot(userRef, (snapshot) => {
         if (snapshot.exists()) {
           const userData = snapshot.data();
-          if (userData && userData.link && userData.repository) {
-            setLinks(userData.link);
+          if (userData && userData.generalLink && userData.repository) {
+            setGeneralLinks(userData.generalLink);
             setRepositories(userData.repository);
             setFetchingStatus('fetched');
           }
         } else {
-          setLinks([]);
+          setGeneralLinks([]);
           setRepositories([]);
           setFetchingStatus('fetched'); // Set to 'fetched' even when user data doesn't exist
         }
@@ -34,11 +34,11 @@ export default function useFetchLinks(): {
 
       return () => unsub();
     } else {
-      setLinks([]);
+      setGeneralLinks([]);
       setRepositories([]);
       setFetchingStatus('error');
     }
   }, [user]);
 
-  return { links, repositories, fetchingStatus };
+  return { generalLinks, repositories, fetchingStatus };
 }

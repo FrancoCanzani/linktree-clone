@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import LinkFormOpener from '@/app/components/admin/linkFormOpener';
 import LinkForm from '@/app/components/admin/linkForm';
-import CurrentLinks from '@/app/components/admin/currentLinks';
+import UserLinks from '@/app/components/admin/userLinks';
 export default function Links() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -15,7 +15,7 @@ export default function Links() {
       ) : (
         <LinkFormOpener isOpen={isOpen} setIsOpen={setIsOpen} />
       )}
-      <CurrentLinks />
+      <UserLinks />
     </section>
   );
 }

@@ -24,7 +24,7 @@ const LinkTypeSelector = ({
         {SVG}
       </button>
       <span className='text-center capitalize font-semibold text-xs'>
-        {text}
+        {text == 'generalLink' ? 'general link' : text}
       </span>
     </div>
   );

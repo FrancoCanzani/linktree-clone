@@ -32,7 +32,7 @@ export default function LinkForm({
 }) {
   const [userInput, setUserInput] = useState<string>('');
   const [formStatus, setFormStatus] = useState('');
-  const [linkType, setLinkType] = useState('link');
+  const [linkType, setLinkType] = useState('generalLink');
   const { user }: CustomUser = useFirebaseUser();
   // Use the useURLMetadata hook to get metadata
   const metadata = useURLMetadata(userInput);
@@ -105,7 +105,7 @@ export default function LinkForm({
         <div className='flex py-2 w-full'>
           <LinkTypeSelector
             SVG={<HyperlinkSVG />}
-            text={'link'}
+            text={'generalLink'}
             linkType={linkType}
             setLinkType={setLinkType}
           />
