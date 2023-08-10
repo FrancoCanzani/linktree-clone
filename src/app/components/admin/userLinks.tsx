@@ -2,14 +2,14 @@ import useFetchLinks from '@/utils/hooks/useFetchLinks';
 import { doc, collection, updateDoc, arrayRemove } from 'firebase/firestore';
 import { db } from '../../../../firebase';
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
-import LinkType from '@/utils/types';
 import Image from 'next/image';
+import { LinkType } from '@/utils/types';
 
 export default function UserLinks() {
   const { generalLinks, repositories, fetchingStatus } = useFetchLinks();
 
   return (
-    <section className='mt-6 text-center w-2/3 lg:w-1/2'>
+    <section className='mt-6 text-center w-2/3'>
       {fetchingStatus == 'error' && (
         <span className='capitalize text-red-500'>
           Something went wrong. Please try again!
@@ -20,12 +20,6 @@ export default function UserLinks() {
         data={generalLinks}
         docToUpdate={'generalLink'}
         linkType={'General Link'}
-      />
-
-      <UserLink
-        data={repositories}
-        docToUpdate={'repository'}
-        linkType={'Repository'}
       />
     </section>
   );
@@ -60,7 +54,7 @@ function UserLink({
     <ul>
       {data.length > 0 &&
         data.map((link) => (
-          <li key={link.key}>
+          <li key={link.url}>
             <div
               className={`p-3 shadow-sm rounded-md mb-4 ${
                 docToUpdate == 'generalLink' ? 'bg-white' : 'bg-sky-50'
@@ -68,7 +62,7 @@ function UserLink({
             >
               <div className='flex items-center justify-start '>
                 <Image
-                  src={link.images[0]}
+                  src={link?.images?.[0]}
                   width={150}
                   height={150}
                   priority

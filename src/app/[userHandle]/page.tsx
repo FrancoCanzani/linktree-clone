@@ -29,10 +29,10 @@ export default function LinkTree({ params }: { params: { slug: string } }) {
 
   return (
     <main className='flex px-4 xl:px-44 flex-col items-center justify-start py-8'>
-      {/* <UserProfile />
+      <UserProfile />
       <h2>Project Links</h2>
-      <UserLink dataFetched={dataFetched} links={links} />
-      <h2>Repositories</h2>
+      <UserLink />
+      {/* <h2>Repositories</h2>
       <UserRepos /> */}
       <footer className='fixed bottom-2'>
         <Icon size='text-xl' />

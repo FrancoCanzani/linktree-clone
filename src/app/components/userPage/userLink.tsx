@@ -5,41 +5,38 @@ import Image from 'next/image';
 import LinkSkeleton from '../skeletons/linkSkeleton';
 
 // Firebase types
-import { DocumentData } from 'firebase/firestore';
 import Link from 'next/link';
 
 import { transformURL } from '@/utils/functions/transformURL';
+import useFetchLinks from '@/utils/hooks/useFetchLinks';
 
-interface UserLinkProps {
-  dataFetched: boolean;
-  links: DocumentData[];
-}
+export default function UserLink() {
+  const { generalLinks, repositories, fetchingStatus } = useFetchLinks();
 
-export default function UserLink({ dataFetched, links }: UserLinkProps) {
   return (
     <>
-      {dataFetched ? (
-        links.length > 0 ? (
+      {generalLinks ? (
+        generalLinks.length > 0 ? (
           <div className='flex w-1/2 flex-col relative items-center justify-center'>
-            {links.map((link) => (
+            {generalLinks.map((link) => (
               <a
                 target='_blank'
-                href={link.linkURL}
-                key={link.linkURL}
+                href={link.url}
+                key={link.url}
                 className='m-2 flex w-full bg-black text-white items-center justify-center gap-4 px-9 py-4 rounded-md font-semibold'
               >
                 <Image
                   src={`https://www.google.com/s2/favicons?sz=256&domain_url=${encodeURIComponent(
-                    transformURL(link.linkURL)
+                    transformURL(link.url)
                   )}`}
                   height={40}
                   width={40}
                   priority
-                  alt={`Favicon for ${link.linkURL}`}
+                  alt={`Favicon for ${link.url}`}
                   className='p-2 absolute left-7 bg-white rounded-md'
                 />
                 <span className='hover:scale-105 text-xl transition-all duration-100'>
-                  {link.linkDescription}
+                  {link.description}
                 </span>
               </a>
             ))}

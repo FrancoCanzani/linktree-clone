@@ -6,7 +6,7 @@ import { FormEvent, useState } from 'react';
 
 // Utils / Hooks
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
-import useURLMetadata from '@/utils/hooks/useUrlMetadata';
+import validateURL from '@/utils/functions/validateUrl';
 
 // Components
 import CloseButton from '../buttons/closeButton';
@@ -14,12 +14,12 @@ import SubmitButton from '../buttons/submitButton';
 import LinkTypeSelector from './linkTypeSelector';
 import FolderSVG from '@/public/svg/folder';
 import HyperlinkSVG from '@/public/svg/hyperlink';
+import ErrorMessage from '../form/errorMessage';
 
 // Firebase
 import { collection, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../../../firebase';
 import { User } from 'firebase/auth';
-import ErrorMessage from '../form/errorMessage';
 
 type CustomUser = {
   user: User | null;
@@ -34,39 +34,45 @@ export default function LinkForm({
   const [formStatus, setFormStatus] = useState('');
   const [linkType, setLinkType] = useState('generalLink');
   const { user }: CustomUser = useFirebaseUser();
-  // Use the useURLMetadata hook to get metadata
-  const metadata = useURLMetadata(userInput);
 
-  async function handleAddLink(event: FormEvent, type: string) {
+  async function fetchMetadata(url: string) {
+    const response = await fetch(
+      `https://jsonlink.io/api/extract?url=${encodeURIComponent(url)}`
+    );
+    if (!response.ok) {
+      console.error('Error');
+    }
+    const metadata = await response.json();
+    return metadata;
+  }
+
+  async function handleAddLink(event: FormEvent, type: string, input: string) {
     event.preventDefault();
-    setFormStatus('Adding');
-
-    if (metadata && metadata.url) {
+    setFormStatus('adding');
+    if (user && validateURL(userInput) == null) {
       try {
+        const metadata = await fetchMetadata(input);
         const userRef = doc(collection(db, 'users'), user?.uid);
         const fieldToUpdate = type;
-
-        // Access metadata properties directly
         await updateDoc(userRef, {
           [fieldToUpdate]: arrayUnion(metadata),
         });
 
         setUserInput('');
-        setFormStatus('Added');
+        setFormStatus('added');
         setTimeout(() => {
           setFormStatus('');
         }, 4000);
       } catch (error) {
-        console.error('Error adding link:', error);
-        setFormStatus('Error');
+        setFormStatus('error');
       }
     }
   }
 
   return (
     <form
-      onSubmit={(e) => handleAddLink(e, linkType)}
-      className='bg-gray-200 capitalize w-2/3 lg:w-1/2 p-4 rounded-md'
+      onSubmit={(e) => handleAddLink(e, linkType, userInput)}
+      className='bg-gray-200 capitalize w-2/3 p-4 rounded-md'
     >
       <div className='flex justify-between items-center'>
         <label htmlFor='url' className='font-semibold'>
@@ -90,8 +96,15 @@ export default function LinkForm({
           <SubmitButton text='Add' formStatus={formStatus} />
         </div>
 
-        {formStatus === 'Error' && (
-          <ErrorMessage error='Something went wrong. Please try again.' />
+        {formStatus == 'error' && (
+          <ErrorMessage
+            error={
+              'Something went wrong while submitting your URL. Please try again!'
+            }
+          />
+        )}
+        {validateURL(userInput) && (
+          <ErrorMessage error={validateURL(userInput)} />
         )}
       </div>
 

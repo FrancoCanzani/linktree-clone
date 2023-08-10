@@ -7,4 +7,13 @@ type LinkType = {
   title: string;
 };
 
-export default LinkType;
+interface URLMetadata {
+  key: string;
+  url: string;
+  title: string;
+  description: string;
+  domain: string;
+  images: string[];
+}
+
+export type { URLMetadata, LinkType };
