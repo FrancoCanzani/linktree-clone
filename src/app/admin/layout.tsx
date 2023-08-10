@@ -7,12 +7,12 @@ export default function SetUpLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className='min-h-screen'>
+    <main className='h-screen'>
       <Header />
-      <div className='flex min-h-full'>
+      <div className='flex'>
         <AdminPanelSidebar />
-        <div className='flex-1 min-h-full bg-gray-50 pt-8'>{children}</div>
+        <div className='flex-1 bg-gray-50 pt-8'>{children}</div>
       </div>
-    </section>
+    </main>
   );
 }

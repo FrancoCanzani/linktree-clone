@@ -11,7 +11,7 @@ export default function useFetchLinks(): {
 } {
   const [generalLinks, setGeneralLinks] = useState<LinkType[]>([]);
   const [repositories, setRepositories] = useState<LinkType[]>([]);
-  const [fetchingStatus, setFetchingStatus] = useState(''); // Set initial status to 'idle'
+  const [fetchingStatus, setFetchingStatus] = useState('fetching'); // Set initial status to 'idle'
   const { user } = useFirebaseUser();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function useFetchLinks(): {
         } else {
           setGeneralLinks([]);
           setRepositories([]);
-          setFetchingStatus('fethed'); // Set to 'fetched' even when user data doesn't exist
+          setFetchingStatus('fetched'); // Set to 'fetched' even when user data doesn't exist
         }
       });
 

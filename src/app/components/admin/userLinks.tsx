@@ -21,6 +21,11 @@ export default function UserLinks() {
         docToUpdate={'generalLink'}
         linkType={'General Link'}
       />
+      <UserLink
+        data={repositories}
+        docToUpdate={'repository'}
+        linkType={'Repository'}
+      />
     </section>
   );
 }

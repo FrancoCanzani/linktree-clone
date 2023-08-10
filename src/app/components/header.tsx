@@ -19,7 +19,7 @@ export default function Header() {
 
   return (
     <header
-      className={`z-10 overflow-hidden sticky top-0 w-full rounded-b-md items-center transition-all duration-100 ease-in-out ${
+      className={`overflow-hidden z-10 sticky top-0 w-full rounded-b-md items-center transition-all duration-100 ease-in-out ${
         isScrolling ? 'shadow-md' : 'shadow-none'
       }`}
     >
