@@ -1,34 +1,31 @@
 import Image from 'next/image';
 import { DocumentData } from 'firebase/firestore';
 import { transformURL } from '@/utils/functions/transformURL';
-import useFetchRepositories from '@/utils/hooks/useFetchRepositories';
 import useFetchRepositoryTech from '@/utils/hooks/useFetchRepositoryTech';
 import TechnologiesLegend from './technologiesLegend';
+import useFetchLinks from '@/utils/hooks/useFetchLinks';
 
 const UserRepos = () => {
-  const { repos, dataFetched } = useFetchRepositories();
+  const { generalLinks, repositories, fetchingStatus } = useFetchLinks();
+  const { repositoryTech, error } = useFetchRepositoryTech(
+    'https://github.com/tailwindlabs/tailwindcss.com/blob/v3.3/src/layouts/SidebarLayout.js'
+  );
 
   return (
     <>
-      {repos.length > 0 ? (
+      {repositories && (
         <div className='flex w-1/2 flex-col relative items-center justify-center'>
-          {repos.map((repo) => (
-            <UserRepoItem key={repo.repositoryLink} repo={repo} />
+          {repositories.map((repo) => (
+            <UserRepoItem key={repo.url} repo={repo} />
           ))}
         </div>
-      ) : (
-        <span>No links found</span>
       )}
     </>
   );
 };
 
 const UserRepoItem = ({ repo }: UserRepoItemProps) => {
-  const { repositoryOwner, repositoryName, repositoryLink } = repo;
-  const { repositoryTech, error } = useFetchRepositoryTech({
-    repositoryOwner,
-    repositoryName,
-  });
+  const { repositoryTech, error } = useFetchRepositoryTech(repo.url);
 
   const technologies: Technology[] = Object.entries(repositoryTech).map(
     ([name, bytesUsed]) => ({
@@ -39,25 +36,21 @@ const UserRepoItem = ({ repo }: UserRepoItemProps) => {
 
   return (
     <a
-      href={repositoryLink}
+      href={repo.url}
       target='_blank'
       className='m-2 flex w-full  items-center justify-center gap-4 px-9 py-2 rounded-md font-semibold'
     >
       <div className='flex flex-col justify-center items-center'>
         <div className='flex items-center justify-center gap-2'>
-          <Image
-            src={`https://www.google.com/s2/favicons?sz=256&domain_url=${encodeURIComponent(
-              transformURL(repositoryLink)
-            )}`}
+          {/* <Image
+            src={repo?.Images[0]}
             height={25}
             width={25}
             priority
-            alt={`Favicon for ${repositoryName} repository`}
+            alt={`Favicon for repository`}
             className='p-1 bg-white rounded-md'
-          />
-          <span className='text-xl'>
-            {`${repositoryName} by ${repositoryOwner}`}
-          </span>
+          /> */}
+          <span className='text-xl'>{repo.title}</span>
         </div>
 
         {error ? (

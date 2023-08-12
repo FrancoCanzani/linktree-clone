@@ -3,7 +3,7 @@
 // Firebase import
 import { getAuth, signOut } from 'firebase/auth';
 import { app } from '../../../../firebase';
-
+import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const auth = getAuth(app);
@@ -18,10 +18,11 @@ export default function SignOut() {
 
   return (
     <button
+      aria-label='Sign out'
       onClick={handleSignOut}
-      className='px-3 py-2 font-bold bg-black text-white hover:opacity-90 rounded-md'
+      className='p-2 rounded-md hover:bg-stone-200'
     >
-      SignOut
+      <LogOut width={18} />
     </button>
   );
 }

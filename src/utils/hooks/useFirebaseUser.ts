@@ -4,16 +4,26 @@ import { app } from '../../../firebase';
 
 const auth = getAuth(app);
 
+interface AuthState {
+  isSignedIn: boolean;
+  pending: boolean;
+  user: User | null;
+}
+
 export default function useFirebaseUser() {
-  const [user, setUser] = useState<User | null>(null); // Import the User type from Firebase
+  const [authState, setAuthState] = useState<AuthState>({
+    isSignedIn: false,
+    pending: true,
+    user: null,
+  });
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+      setAuthState({ user, pending: false, isSignedIn: !!user });
     });
 
     return () => unsubscribe();
   }, []);
 
-  return { user };
+  return authState;
 }

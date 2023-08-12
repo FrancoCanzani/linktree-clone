@@ -1,7 +1,6 @@
-// technologyColors.ts
 const technologyColors: { [key: string]: string } = {
-  HTML: 'bg-blue-500',
-  TypeScript: 'bg-indigo-500',
+  HTML: 'bg-orange-500',
+  TypeScript: 'bg-blue-700',
   CSS: 'bg-pink-500',
   JavaScript: 'bg-yellow-500',
   Python: 'bg-green-500',
@@ -13,7 +12,7 @@ const technologyColors: { [key: string]: string } = {
   C: 'bg-green-600',
   Swift: 'bg-red-600',
   Kotlin: 'bg-indigo-600',
-  Other: 'bg-gray-500', // Default color for unmatched technologies
+  Other: 'bg-red-500', // Default color for unmatched technologies
 };
 
 export default technologyColors;

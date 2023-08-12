@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react';
+import extractRepositoryInfo from '@/utils/functions/extractRepositoryInfo';
 
-interface RepositoryTechProps {
-  repositoryOwner: string;
-  repositoryName: string;
-}
-
-export default function useFetchRepositoryTech({
-  repositoryOwner,
-  repositoryName,
-}: RepositoryTechProps) {
+export default function useFetchRepositoryTech(url: string) {
   const [repositoryTech, setRepositoryTech] = useState({});
   const [error, setError] = useState<Error | undefined>();
+  const { repositoryOwner, repositoryName } = extractRepositoryInfo(url);
 
   useEffect(() => {
     async function fetchTech() {
@@ -25,16 +19,13 @@ export default function useFetchRepositoryTech({
         setRepositoryTech(data);
         setError(undefined);
       } catch (error) {
-        // This line is added to avoid Argument of type 'unknown' error is not assignable...
         if (error instanceof Error) {
           setError(error);
         }
       }
     }
 
-    return () => {
-      fetchTech();
-    };
+    fetchTech();
   }, [repositoryName, repositoryOwner]);
 
   return { repositoryTech, error };

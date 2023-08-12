@@ -1,18 +1,19 @@
-import AdminPanelSidebar from '../components/admin/adminPanelSidebar';
-import Header from '../components/header';
-
-export default function SetUpLayout({
+import Sidebar from '../components/admin/sidebar';
+import { Suspense } from 'react';
+import Profile from '../components/admin/profile';
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <main className='h-screen'>
-      <Header />
-      <div className='flex'>
-        <AdminPanelSidebar />
-        <div className='flex-1 bg-gray-50 pt-8'>{children}</div>
-      </div>
-    </main>
+    <div>
+      <Sidebar>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Profile />
+        </Suspense>
+      </Sidebar>
+      <div className='min-h-screen sm:pl-60'>{children}</div>
+    </div>
   );
 }

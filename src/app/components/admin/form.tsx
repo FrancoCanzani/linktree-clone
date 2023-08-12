@@ -1,23 +1,14 @@
 'use client';
 
-// React / Next
-import { Dispatch, SetStateAction } from 'react';
 import { FormEvent, useState } from 'react';
-
-// Utils / Hooks
 import useFirebaseUser from '@/utils/hooks/useFirebaseUser';
 import validateURL from '@/utils/functions/validateUrl';
-
-// Components
-import CloseButton from '../buttons/closeButton';
 import SubmitButton from '../buttons/submitButton';
-import LinkTypeSelector from './linkTypeSelector';
-import FolderSVG from '@/public/svg/folder';
-import HyperlinkSVG from '@/public/svg/hyperlink';
-import ErrorMessage from '../form/errorMessage';
-
-// Firebase
+import LinkType from './linkType';
+import ErrorMessage from '../errorMessage';
+import { Link2, Folder } from 'lucide-react';
 import { collection, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import fetchMetadata from '@/utils/functions/fetchMetadata';
 import { db } from '../../../../firebase';
 import { User } from 'firebase/auth';
 
@@ -25,26 +16,11 @@ type CustomUser = {
   user: User | null;
 };
 
-export default function LinkForm({
-  setIsOpen,
-}: {
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-}) {
+export default function Form() {
   const [userInput, setUserInput] = useState<string>('');
   const [formStatus, setFormStatus] = useState('');
   const [linkType, setLinkType] = useState('generalLink');
   const { user }: CustomUser = useFirebaseUser();
-
-  async function fetchMetadata(url: string) {
-    const response = await fetch(
-      `https://jsonlink.io/api/extract?url=${encodeURIComponent(url)}`
-    );
-    if (!response.ok) {
-      console.error('Error');
-    }
-    const metadata = await response.json();
-    return metadata;
-  }
 
   async function handleAddLink(event: FormEvent, type: string, input: string) {
     event.preventDefault();
@@ -72,13 +48,12 @@ export default function LinkForm({
   return (
     <form
       onSubmit={(e) => handleAddLink(e, linkType, userInput)}
-      className='bg-gray-200 capitalize w-2/3 p-4 rounded-md'
+      className='rounded-md border border-stone-200 bg-white p-8'
     >
       <div className='flex justify-between items-center'>
         <label htmlFor='url' className='font-semibold'>
           Enter URL
         </label>
-        <CloseButton setIsOpen={setIsOpen} />
       </div>
       <div className='border-b-2 border-gray-100 py-6'>
         <div className='flex items-center justify-center mb-1'>
@@ -103,27 +78,25 @@ export default function LinkForm({
             }
           />
         )}
-        {validateURL(userInput) && (
-          <ErrorMessage error={validateURL(userInput)} />
-        )}
+        <ErrorMessage error={validateURL(userInput)} />
       </div>
 
       <div className='pt-6 w-full flex flex-col'>
         <div className='flex justify-between items-center'>
           <h2 className='font-semibold'>Select The Link Type</h2>
-          <span className='bg-white text-gray-500 text-xs px-2 font-semibold py-1 rounded-md'>
+          <span className='bg-stone-200 text-stone-700 text-xs px-2 font-semibold py-1 rounded-md'>
             More types coming soon
           </span>
         </div>
         <div className='flex py-2 w-full'>
-          <LinkTypeSelector
-            SVG={<HyperlinkSVG />}
+          <LinkType
+            SVG={<Link2 size={18} />}
             text={'generalLink'}
             linkType={linkType}
             setLinkType={setLinkType}
           />
-          <LinkTypeSelector
-            SVG={<FolderSVG />}
+          <LinkType
+            SVG={<Folder size={18} />}
             text={'repository'}
             linkType={linkType}
             setLinkType={setLinkType}

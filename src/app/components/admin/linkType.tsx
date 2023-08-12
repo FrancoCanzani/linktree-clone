@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { Dispatch, SetStateAction } from 'react';
 
-const LinkTypeSelector = ({
+const LinkType = ({
   SVG,
   text,
   linkType,
@@ -18,7 +18,7 @@ const LinkTypeSelector = ({
         onClick={() => setLinkType(text)}
         type='button'
         className={`${
-          linkType == text ? 'border-black' : 'border-gray-200'
+          linkType == text ? 'border-stone-800' : 'border-stone-200'
         } p-4 border-2 hover:bg-gray-100 bg-white rounded-md mb-2`}
       >
         {SVG}
@@ -30,4 +30,4 @@ const LinkTypeSelector = ({
   );
 };
 
-export default LinkTypeSelector;
+export default LinkType;
